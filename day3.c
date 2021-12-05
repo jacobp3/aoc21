@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int main(void) {
-  int LENGTH = 5;
+  int LENGTH = 12;
 
   FILE *fp;
   char buff[255];
@@ -12,7 +12,7 @@ int main(void) {
     counts[i] = 0;
   }
 
-  fp = fopen("day3simple.txt", "r");
+  fp = fopen("day3.txt", "r");
 
   while(fgets(buff, 255, (FILE*)fp) > 0) {
     lines++;
