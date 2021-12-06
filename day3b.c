@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
-int LENGTH = 5;
-char *inputFile = "day3simple.txt";
+int LENGTH = 12;
+char *inputFile = "day3.txt";
 
 int toDecimal (char *row) {
   int retVal = 0;
@@ -18,77 +18,89 @@ int toDecimal (char *row) {
 int main(void) {
   FILE *input;
   char buff[255];
-  int lines = 0;
-  int oxygenCount = 0;
-  int coTwoCount = 0;
-  char *oxygenPrefix = "";
-  char *coTwoPrefix = "";
-  int numOxygenMatched = 0;
-  int numCoTwoMatched = 0;
-  char *oxygenResult = "x";
-  char *coTwoResult = "x";
+  int oxygenLines;
+  int coTwoLines;
+  int oxygenCount;
+  int coTwoCount;
+  char oxygenPrefix[LENGTH];
+  strcpy(oxygenPrefix, "");
+  char coTwoPrefix[LENGTH];
+  strcpy(coTwoPrefix, "");
+  int numOxygenMatched;
+  int numCoTwoMatched;
+  char oxygenResult[LENGTH];
+  char coTwoResult[LENGTH];
 
   for(int i = 0; i < LENGTH; i++) {
-    if(!strcmp(oxygenResult, "x") && !strcmp(coTwoResult, "x")) {
+    if((numOxygenMatched <=2) && (numCoTwoMatched <= 2)) {
       break;
     }
+
+    numOxygenMatched = 0;
+    numCoTwoMatched = 0;
+    oxygenCount = 0;
+    coTwoCount = 0;
+    oxygenLines = 0;
+    coTwoLines = 0;
+
     input = fopen(inputFile, "r");
 
     while(fgets(buff, 255, (FILE*)input) > 0) {
-      lines++;
-      if(strcmp(oxygenResult, "x")) {
-        int match = 1;
-        for(int j = 0; j < i; j++) {
-          if(buff[j] != oxygenPrefix[j]) {
-            match = 0;
-            break;
-          }
-        }
-        if(match) {
-          if(numOxygenMatched == 0) {
-            oxygenResult = buff;
-          }
-          numOxygenMatched++;
-          if(buff[i] == '1') {
-            oxygenCount++;
-          }
+      int match = 1;
+      for(int j = 0; j < i; j++) {
+        if(buff[j] != oxygenPrefix[j]) {
+          match = 0;
+          break;
         }
       }
-      if(strcmp(coTwoResult, "x")) {
-        int match = 1;
-        for(int j = 0; j < i; j++) {
-          if(buff[j] != coTwoPrefix[j]) {
-            match = 0;
-            break;
-          }
+      if(match) {
+        oxygenLines++;
+        if(numOxygenMatched == 0) {
+          strcpy(oxygenResult,buff);
+        } else if(numOxygenMatched == 1 && buff[i] == '1') {
+          strcpy(oxygenResult,buff);
         }
-        if(match) {
-          if(numCoTwoMatched == 0) {
-            coTwoResult = buff;
-          }
-          numCoTwoMatched++;
-          if(buff[i] == '1') {
-            coTwoCount++;
-          }
+        numOxygenMatched++;
+        if(buff[i] == '1') {
+          oxygenCount++;
+        }
+      }
+      match = 1;
+      for(int j = 0; j < i; j++) {
+        if(buff[j] != coTwoPrefix[j]) {
+          match = 0;
+          break;
+        }
+      }
+      if(match) {
+        coTwoLines++;
+        if(numCoTwoMatched == 0) {
+          strcpy(coTwoResult,buff);
+        } else if(numCoTwoMatched == 1 && buff[i] == '0') {
+          strcpy(coTwoResult,buff);
+        }
+        numCoTwoMatched++;
+        if(buff[i] == '1') {
+          coTwoCount++;
         }
       }
     }
 
     fclose(input);
-
-    if(oxygenCount >= (lines/2)) {
+    if(oxygenCount*2 >= (oxygenLines)) {
       strcat(oxygenPrefix,"1");
     } else {
       strcat(oxygenPrefix,"0");
     }
 
-    if(coTwoCount >= (lines/2)) {
+    if(coTwoCount*2 >= (coTwoLines)) {
       strcat(coTwoPrefix,"0");
     } else {
       strcat(coTwoPrefix,"1");
     }
   }
 
-  printf("oxygen result: %s\n", oxygenResult);
-  printf("coTwo result: %s\n", coTwoResult);
+  printf("oxygen result: %i\n", toDecimal(oxygenResult));
+  printf("coTwo result: %i\n", toDecimal(coTwoResult));
+  printf("final answer: %i\n", toDecimal(oxygenResult) * toDecimal(coTwoResult));
 }
