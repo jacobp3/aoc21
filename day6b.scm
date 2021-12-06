@@ -15,6 +15,7 @@
   (vector-ref v x)
 )
 
+; did some preprocessing of the input using vim %s/,/\r then cat|sort|uniq -c
 (+
   (+ 
     (+ 
