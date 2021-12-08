@@ -1,0 +1,3 @@
+in vim, ran: %s/.*| \(.*\)/\1/g
+then ran: %s/ /\r/g
+then outside, from command line ran: awk '{print length}' ~/workspace/aoc21/day8a.txt | sort | uniq -c
